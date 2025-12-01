@@ -135,7 +135,7 @@
 				"type": "Copy",
 				"dependsOn": [
 					{
-						"activity": "AzureSqlToLake",
+						"activity": "max_cdc",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -152,6 +152,15 @@
 				"typeProperties": {
 					"source": {
 						"type": "JsonSource",
+						"additionalColumns": [
+							{
+								"name": "cdc",
+								"value": {
+									"value": "cZ",
+									"type": "Expression"
+								}
+							}
+						],
 						"storeSettings": {
 							"type": "AzureBlobFSReadSettings",
 							"recursive": true,
@@ -162,12 +171,12 @@
 						}
 					},
 					"sink": {
-						"type": "ParquetSink",
+						"type": "JsonSink",
 						"storeSettings": {
 							"type": "AzureBlobFSWriteSettings"
 						},
 						"formatSettings": {
-							"type": "ParquetWriteSettings"
+							"type": "JsonWriteSettings"
 						}
 					},
 					"enableStaging": false
@@ -180,15 +189,39 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "ParquetDynamic",
+						"referenceName": "Json2",
 						"type": "DatasetReference",
 						"parameters": {
 							"container": "bronze",
 							"folder": "cdc",
-							"file": "empty.json"
+							"file": "cdc.json"
 						}
 					}
 				]
+			},
+			{
+				"name": "max_cdc",
+				"type": "Script",
+				"dependsOn": [
+					{
+						"activity": "AzureSqlToLake",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"scripts": [],
+					"scriptBlockExecutionTimeout": "02:00:00"
+				}
 			}
 		],
 		"parameters": {
