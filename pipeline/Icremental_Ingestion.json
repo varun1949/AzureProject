@@ -156,7 +156,7 @@
 							{
 								"name": "cdc",
 								"value": {
-									"value": "@activity('max_cdc').output.resultsSets[0].rows[0].cdc",
+									"value": "@activity('max_cdc').output.resultSets[0].rows[0].cdc",
 									"type": "Expression"
 								}
 							}
@@ -184,7 +184,12 @@
 				"inputs": [
 					{
 						"referenceName": "Json2",
-						"type": "DatasetReference"
+						"type": "DatasetReference",
+						"parameters": {
+							"container": "bronze",
+							"folder": "cdc",
+							"file": "empty.json"
+						}
 					}
 				],
 				"outputs": [
