@@ -131,11 +131,22 @@
 				}
 			},
 			{
-				"name": "If Condition1",
+				"name": "If incremental data",
 				"type": "IfCondition",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "AzureSqlToLake",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"userProperties": [],
 				"typeProperties": {
+					"expression": {
+						"value": "@greater(activity('AzureSqlToLake').output.dataRead,0 )",
+						"type": "Expression"
+					},
 					"ifTrueActivities": [
 						{
 							"name": "Update last CDC",
